@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "632278975325",
+    "project_id": "cubesat-gs",
+    "storage_bucket": "cubesat-gs.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:632278975325:android:fa3c93189d0fc528dfdeb4",
+        "android_client_info": {
+          "package_name": "com.example.mqtt_dashboard"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAH8K1SYsGEW-Vu8bk0hrOniCMjwz5lQuw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

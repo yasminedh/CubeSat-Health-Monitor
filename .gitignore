@@ -1,0 +1,18 @@
+# Flutter
+dashboard/build/
+dashboard/.dart_tool/
+dashboard/.idea/
+dashboard/.packages
+dashboard/.flutter-plugins
+dashboard/.flutter-plugins-dependencies
+
+# PlatformIO
+firmware/.pio/
+firmware/.vscode/
+
+# VSCode
+.vscode/
+
+# Linux
+*.swp
+.DS_Store

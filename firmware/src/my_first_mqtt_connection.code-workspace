@@ -1,0 +1,20 @@
+{
+	"folders": [
+		{
+			"path": "../../../../../myProjects/Flutter-MQTT/my_first_mqtt_connection"
+		},
+		{
+			"name": "MQTT_Hello_World",
+			"path": "../../MQTT_Hello_World"
+		},
+		{
+			"name": "MQTT_WITH_FreeRTOS",
+			"path": "../../MQTT_WITH_FreeRTOS"
+		},
+		{
+			"name": "Migration_to_esp32",
+			"path": ".."
+		}
+	],
+	"settings": {}
+}

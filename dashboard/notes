@@ -1,0 +1,149 @@
+callback : subscribing
+
+// ================= WIFI =================
+const char* ssid = "MAXBOX5G_A82F_5G";
+const char* password = "dmc4dgx4i9uh";
+
+// ================= MQTT =================
+const char* mqtt_server = "192.168.1.109"; // IP du broker Mosquitto
+const int mqtt_port = 1883;
+
+
+
+----------------------------------------------------------------------------------------
+===Commande Mosquitto sur Terminal==========
+mosquitto_pub -h localhost -t esp/led -m "ON"
+mosquitto_pub -h localhost -t esp/led -m "OFF"
+
+--------------------------------------------------------------------------------------------------------
+import 'package:flutter/material.dart';
+import 'package:mqtt_client/mqtt_client.dart';
+import 'package:mqtt_client/mqtt_server_client.dart';
+
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: Dashboard(),
+    );
+  }
+}
+
+class Dashboard extends StatefulWidget {
+  const Dashboard({super.key});
+
+  @override
+  State<Dashboard> createState() => _DashboardState();
+}
+
+class _DashboardState extends State<Dashboard> {
+  late MqttServerClient client;
+
+  String temp = "--";
+  String hum = "--";
+  String pot = "--";
+
+  @override
+  void initState() {
+    super.initState();
+    connectMQTT();
+  }
+
+  Future<void> connectMQTT() async {
+    client = MqttServerClient('192.168.1.109', 'flutter_client');
+
+    client.port = 1883;
+    client.keepAlivePeriod = 20;
+
+    client.onConnected = () {
+      print('Connected to MQTT');
+
+      client.subscribe('esp/dht11/temperature', MqttQos.atLeastOnce);
+      client.subscribe('esp/dht11/humidity', MqttQos.atLeastOnce);
+      client.subscribe('esp/pot', MqttQos.atLeastOnce);
+    };
+
+    try {
+      await client.connect();
+    } catch (e) {
+      print('Connection failed: $e');
+      client.disconnect();
+    }
+
+    client.updates?.listen((messages) {
+      final recMess = messages[0].payload as MqttPublishMessage;
+      final payload = MqttPublishPayload.bytesToStringAsString(
+          recMess.payload.message);
+
+      final topic = messages[0].topic;
+
+      setState(() {
+        if (topic == 'esp/dht11/temperature') {
+          temp = payload;
+        } else if (topic == 'esp/dht11/humidity') {
+          hum = payload;
+        } else if (topic == 'esp/pot') {
+          pot = payload;
+        }
+      });
+    });
+  }
+
+  void sendMessage(String msg) {
+  final builder = MqttClientPayloadBuilder();
+  builder.addString(msg);
+
+  client.publishMessage(
+    'esp/led',
+    MqttQos.atLeastOnce,
+    builder.payload!,
+  );
+}
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text("MQTT Dashboard")),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text("Temperature: $temp", style: TextStyle(fontSize: 22)),
+            
+            SizedBox(height: 20),
+            Text("Humidity: $hum", style: TextStyle(fontSize: 22)),
+
+            SizedBox(height: 20),
+            Text("Potentiometer: $pot", style: TextStyle(fontSize: 22)),
+
+            SizedBox(height: 30),
+            ElevatedButton(
+              onPressed: () => sendMessage("ON"),
+              child: Text("Turn LED ON"),
+            ),
+
+            SizedBox(height: 10),
+
+            ElevatedButton(
+              onPressed: () => sendMessage("OFF"),
+              child: Text("Turn LED OFF"),
+            ),
+          ],
+          
+
+          
+
+        ),
+      ),
+    );
+  }
+}
+------------------------------------------------------------------------------------------------
+
