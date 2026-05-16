@@ -1,4 +1,4 @@
-# 🚀 CubeSat Health Monitor
+# CubeSat Health Monitor
 
 A real-time CubeSat telemetry monitoring system built with:
 
